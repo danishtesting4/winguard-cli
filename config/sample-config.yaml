@@ -1,0 +1,46 @@
+# WinGuard CLI - Sample WireGuard Configuration
+# Replace the placeholder keys with your actual WireGuard keys
+
+# Your private key (generate with: wg genkey)
+private_key: "CHANGE_ME_WITH_YOUR_PRIVATE_KEY"
+
+# Your IP address on the VPN
+address: "10.0.0.2/24"
+
+# DNS servers (optional)
+dns:
+  - "1.1.1.2"
+  - "8.8.8.8"
+
+# Listen port (default 51820)
+listen_port: 51820
+
+# Remote peer public key (your server's public key)
+peer_public_key: "CHANGE_ME_WITH_PEER_PUBLIC_KEY"
+
+# Endpoint (server IP:port)
+endpoint: "vpn.example.com:51820"
+
+# MTU size (1280 is good for DPI bypass)
+mtu: 1280
+
+# Keepalive in seconds (prevents connection timeout)
+keep_alive: 25
+
+# Obfuscation mode: "none", "wstunnel", or "lwo"
+# wstunnel wraps traffic in WebSocket HTTPS frames
+# LWO scrambles WireGuard packet headers
+obfuscation: "wstunnel"  # Try "wstunnel" for country blocks, "lwo" for ISP DPI
+
+# Example wstunnel server config (run on your server):
+#
+# [wg-server]
+# ListenPort = 51820
+# PrivateKey = <server_private_key>
+#
+# [wstunnel]
+# ListenPort = 80
+# CertPath = /path/to/cert.pem
+# KeyPath = /path/to/key.pem
+#
+# This makes WG traffic look like regular HTTPS on port 80
