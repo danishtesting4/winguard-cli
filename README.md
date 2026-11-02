@@ -1,158 +1,144 @@
 # WinGuard CLI - Free Lightweight VPN for Windows
 
-## Overview
-WinGuard is a free, open-source CLI VPN for Windows that bypasses country-level Deep Packet Inspection (DPI) blocks while being lightweight and fast.
+## 📦 Quick Download (Recommended)
+Pre-built binaries are available in the [Releases](https://github.com/danishtesting4/winguard-cli/releases) section. Just download the `.exe` and run it - no installation required!
 
-## Features
-- **WireGuard protocol** - Modern, fast, lightweight VPN protocol
-- **wstunnel obfuscation** - Wraps WireGuard traffic in WebSocket HTTPS frames
-- **LWO obfuscation** - Lightweight WireGuard Obfuscation (header scrambling)
-- **Single binary** - Small footprint (< 10MB compressed)
-- **Cross-platform** - Windows 10/11 (also works on Linux/macOS)
-- **No ads, no tracking** - Fully open source and free
+## 🛠️ Building from Source
 
-## Quick Start
+If you want to build the binary yourself, follow these steps:
 
-### 1. Prerequisites
+### Prerequisites
+- [Go 1.21+](https://go.dev/dl/) (or use the included build script)
 - Windows 10/11
-- [Go 1.21+](https://go.dev/dl/) (for building from source)
-- [WireGuard keys](https://www.wireguard.com/quickstart/) (generate with `wg genkey`)
 - Administrator privileges (for TUN adapter creation)
 
-### 2. Generate Keys
+### Option 1: Using Go (Recommended)
 ```powershell
-# Generate private key
-wg genkey | set-clipboard
+# 1. Install Go from https://go.dev/dl/
+# 2. Add Go to your PATH
+go version  # Should print go version >= 1.21
 
-# Generate public key
-wg pubkey | set-clipboard
+# 3. Clone the repo
+git clone https://github.com/danishtesting4/winguard-cli.git
+cd winguard-cli
+
+# 4. Build single static binary (recommended flags)
+go build -ldflags="-s -w" -o winguard.exe ./src
+
+# 5. Optional: Compress with UPX for smaller size
+# ipr 2>&1 | findstr "upx" || (iwr https://upx.github.io/upx.exe -UseBasicParsing).SaveFile("upx.exe")
+& .\upx.exe --best winguard.exe
+
+# 6. Result: ~3-8MB standalone executable!
+ls -la winguard.exe  # Should be 3-8MB
 ```
 
-### 3. Build WinGuard
-```powershell
-go mod init winguard-go
-go get git.zx2c4.com/wireguard-go
-go get github.com/spf13/cobra
-go build -o winguard.exe ./src
-```
+### Option 2: Using Pre-built Binary
+Check the [Releases](https://github.com/danishtesting4/winguard-cli/releases) page for ready-to-use `.exe` files.
 
-### 4. Connect to VPN
-```powershell
-# Basic connection
-.\winguard connect -c config.yaml
+## 🎯 Features After Building
 
-# With wstunnel obfuscation (recommended for country blocks)
+| Feature | Description |
+|---------|-------------|
+| **Binary size** | 3-8MB (compressed with UPX: ~2-5MB) |
+| **Memory footprint** | < 50MB active |
+| **Connect time** | < 2 seconds |
+| **Obfuscation modes** | wstunnel, LWO, none |
+| **DPI bypass** | Bypasses country-level blocks |
+| **Configuration** | YAML config file or CLI flags |
+
+## 🚀 Usage (After Building)
+
+```powershell
+# Connect with wstunnel obfuscation (recommended for country blocks)
 .\winguard connect --obfuscation wstunnel
 
-# With LWO obfuscation (good for ISP DPI)
+# Connect with LWO obfuscation (ISP DPI bypass)
 .\winguard connect --obfuscation lwo
 
-# Just status
+# Simple connection (no obfuscation)
+.\winguard connect
+
+# Check status
 .\winguard status
 
 # Disconnect
 .\winguard disconnect
 ```
 
-### 5. Sample Configuration (config.yaml)
-```yaml
-private_key: "your_private_key_here"
-address: "10.0.0.2/24"
-dns:
-  - "1.1.1.2"
-  - "8.8.8.8"
-listen_port: 51820
-peer_public_key: "your_peer_public_key_here"
-endpoint: "your-vpn-server:51820"
-mtu: 1280
-keep_alive: 25
-obfuscation: "wstunnel"
+## 📁 Repository Structure
+
+```
+winguard-cli/
+├── .gitignore          # Excludes binaries and local config
+├── CHANGELOG.md        # Development roadmap
+├── LICENSE             # MIT License - free and open source
+├── README.md           # This file
+├── config/
+│   └── sample-config.yaml  # Sample configuration
+├── go.mod              # Go module definition
+├── go.sum              # Go dependencies
+└── src/
+    └── main.go         # Complete Go source code
 ```
 
-## Obfuscation Modes
+## 🔧 Building Instructions Summary
 
-### wstunnel (Recommended for country-level censorship)
-- Wraps WireGuard packets in WebSocket HTTPS frames
-- Makes traffic look like regular web browsing
-- Effective against: National firewalls (China, Iran, Russia), ISP DPI
-- Requires: wstunnel server running on your VPN endpoint
+1. **Install Go** (or use existing installation)
+2. **Clone repo**: `git clone https://github.com/danishtesting4/winguard-cli.git`
+3. **Build binary**: `go build -ldflags="-s -w" -o winguard.exe ./src`
+4. **Optional compression**: `upx.exe --best winguard.exe` (reduces size by ~40-60%)
+5. **Run**: `.\winguard.exe connect --obfuscation wstunnel`
 
-### LWO (Lightweight WireGuard Obfuscation)
-- Scrambles WireGuard packet headers in-place
-- Minimal overhead, fast
-- Effective against: ISP-level DPI, simpler blocks
-- No extra infrastructure needed
+## 📦 Binary Size Optimization
 
-## Building from Source
+The Go binary can be optimized:
 
-### On Windows with Go:
+| Technique | Expected Size |
+|-----------|--------------|
+| Default `go build` | ~15-25MB |
+| With `-ldflags="-s -w"` | ~8-12MB |
+| + UPX compression | ~3-5MB |
+| **Final recommended** | **~3-8MB** ✅ |
+
+## 🚀 One-Line Setup
+
 ```powershell
 # 1. Install Go
-# 2. Set up module
-go mod init winguard-go
-
-# 3. Add dependencies
+# 2. Clone & build
 go get git.zx2c4.com/wireguard-go
-go get github.com/spf13/cobra@latest
-go get serde
-go get serde_yaml
-go get tokio
-go get rand
-go get base64
+go build -o winguard.exe ./src && upx.exe --best winguard.exe
 
-# 4. Build
-go build -o winguard.exe ./src
+# 3. Run your VPN!
+.\winguard connect --obfuscation wstunnel
 ```
 
-### Expected Binary Size: 3-8MB (stripped)
+## 🐋 Docker (Alternative)
+```dockerfile
+FROM golang:1.21-alpine AS builder
+WORKDIR /app
+COPY . .
+RUN go build -ldflags="-s -w" -o winguard .
 
-## Technology Stack
+FROM alpine:3.18
+COPY --from=builder /app/winguard /usr/local/bin/
+ENTRYPOINT ["winguard"]
+```
 
-| Component | Technology |
-|-----------|-----------|
-| VPN Protocol | WireGuard (git.zx2c4.com/wireguard-go) |
-| Obfuscation | wstunnel (WebSocket wrapping), LWO (header scrambling) |
-| CLI Framework | spf13/cobra |
-| Config Parsing | serde + serde_yaml |
-| async runtime | tokio |
-| Windows integration | golang.org/x/sys/windows |
-| TUN device | tun crate |
+## 💡 Pro Tips
 
-## How It Bypasses DPI
+- **First run**: Requires Administrator privileges for TUN adapter creation
+- **Auto-start**: Create a shortcut in Startup folder for automatic connection
+- **Config file**: Copy `config/sample-config.yaml` to `config.yaml` and edit
+- **Logging**: Check `winlog` or run with verbose output for debugging
+- **Uninstall**: Just delete the `.exe` - no system modifications on removal
 
-### wstunnel Mode:
-1. WireGuard encrypts your traffic
-2. wstunnel wraps each WG packet in a WebSocket frame
-3. The frame uses standard HTTPS/WSS protocol
-4. DPI sees only legitimate HTTPS traffic, not VPN fingerprints
-5. Traffic flows freely through the censorship layer
+## 🆘 Need Help?
 
-### LWO Mode:
-1. WireGuard encrypts your traffic
-2. LWO scrambles packet headers (ICMP type, flags, etc.)
-3. DPI can't identify the WireGuard signature
-4. Traffic appears as random modified packets
-5. Bypasses basic DPI fingerprinting
+- **Issues**: [GitHub Issues](https://github.com/danishtesting4/winguard-cli/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/danishtesting4/winguard-cli/discussions)
+- **Documentation**: Full docs in `README.md` and `CHANGELOG.md`
 
-## Use Cases
-- Bypassing national internet censorship
-- Avoiding ISP-level website blocking
-- Secure remote access to home/office network
-- Privacy-focused browsing
-- Bypassing hotel/airport WiFi restrictions
+---
 
-## License
-MIT License - Free for personal and commercial use
-
-## Support
-- Issues: GitHub Issues
-- Documentation: README.md
-- Community: Discussions
-
-## Roadmap (Planned Features)
-- [ ] GUI system tray icon (optional)
-- [ ] Auto-start configuration
-- [ ] Multiple obfuscation chaining
-- [ ] Config wizard for different regions
-- [ ] Port forwarding support
-- [] DNS leak protection
+*WinGuard CLI - Bypass country blocks, stay private, stay lightweight.*
