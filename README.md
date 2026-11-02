@@ -3,7 +3,94 @@
 ## 📦 Quick Download (Recommended)
 Pre-built binaries are available in the [Releases](https://github.com/danishtesting4/winguard-cli/releases) section. Just download the `.exe` and run it - no installation required!
 
-## 🛠️ Building from Source
+## 🚀 One-Command Install Methods
+Choose your preferred installation method:
+
+### ☁️ Option 1: PowerShell One-Liner (Easiest)
+```powershell
+iwr https://bit.ly/winguard-install -UseBasicParsing | iex
+# OR run the included script:
+.\install.ps1 -Method binary   # Download pre-built binary (recommended)
+.\install.ps1 -Method build    # Build from source (requires Go)
+```
+
+### 📦 Option 2: Chocolatey Package Manager
+```powershell
+choco install winguard-cli
+```
+*Uses the `winguard-cli.nuspec` in this repo. Requires Chocolatey installed.*
+
+### 📦 Option 3: Winget Package Manager
+```powershell
+winget install danishtesting4.WinGuardCLI
+```
+*Will be available once package is published to Microsoft Store/Repository.*
+
+### 🔨 Option 4: Batch File Installer (Offline)
+```powershell
+.\wininstall.bat
+```
+*Full installer with GUI prompts. Downloads binary and optionally adds to PATH.*
+
+### 📁 Option 5: Manual Binary Download (No Package Manager)
+```powershell
+# 1. Download single .exe from Releases
+# 2. Run as Administrator:
+Right-Click winguard.exe → Run as administrator
+
+# 3. Connect immediately:
+winguard connect --obfuscation wstunnel
+```
+
+### 🛠️ Option 6: Build from Source (Full Control)
+```powershell
+# Requires Go 1.21+
+go get git.zx2c4.com/wireguard-go
+go build -ldflags="-s -w" -o winguard.exe ./src
+# Optional: & .\upx.exe --best winguard.exe  # Compress to ~3-5MB
+
+# Result: Standalone .exe ready to use
+.\winguard connect --obfuscation wstunnel
+```
+
+## 📋 Recommended Method
+**PowerShell one-liner** (`.\install.ps1 -Method binary`) - Most users, 30 seconds, no dependencies.
+
+## 📦 All Methods Summary
+
+| Method | Time | Dependencies | Binary Size | Best For |
+|--------|------|-------------|-------------|----------|
+| **PowerShell script** | 30 sec | None | 3-8MB | Most users |
+| **Chocolatey** | 45 sec | Chocolatey | 3-8MB | choco users |
+| **Winget** | 30 sec | Winget | 3-8MB | winget users |
+| **Batch installer** | 2 min | None | 3-8MB | Offline/GUI preference |
+| **Manual binary** | 5 min | None | 3-8MB | Full control |
+| **Build from source** | 2-5 min | Go 1.21+ | 3-8MB | Developers, customization |
+
+## 💡 Quick Start - Choose One
+
+**Fastest (PowerShell):**
+```powershell
+iwr https://github.com/danishtesting4/winguard-cli/raw/main/install.ps1 | iex
+# Then run:
+.\winguard connect --obfuscation wstunnel
+```
+
+**Easiest (Binary):**
+```powershell
+# 1. Go to: https://github.com/danishtesting4/winguard-cli/releases
+# 2. Download winguard-windows-amd64.exe
+# 3. Run as Administrator
+# 4. winguard connect --obfuscation wstunnel
+```
+
+**Most Customizable (Build):**
+```powershell
+go get git.zx2c4.com/wireguard-go
+go build -ldflags="-s -w" -o winguard.exe ./src
+& .\upx.exe --best winguard.exe
+.\winguard connect --obfuscation wstunnel
+```
 
 If you want to build the binary yourself, follow these steps:
 
