@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>winguard-cli</id>
+    <title>WinGuard CLI - Free Lightweight VPN for Windows</title>
+    <version>1.0.0</version>
+    <authors>danishtesting4</authors>
+    <owners>danishtesting4</owners>
+    <projectUrl>https://github.com/danishtesting4/winguard-cli</projectUrl>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <description>Free, lightweight, open-source CLI VPN for Windows that bypasses country-level DPI blocks. Supports WireGuard protocol with wstunnel and LWO obfuscation modes.</description>
+    <tags>vpn wireguard obfuscation dpi bypass censorship privacy</tags>
+    <tags>vpn wireguard obfuscation privacy security</tags>
+  </metadata>
+  <files>
+    <file src="..\winguard-go\src\main.go" target="src\" />
+    <file src="..\winguard-go\go.mod" target="\" />
+    <file src="..\winguard-go\go.sum" target="\" />
+    <file src="..\winguard-go\LICENSE" target="\" />
+    <file src="..\winguard-go\README.md" target="\" />
+    <file src="..\winguard-go\CHANGELOG.md" target="\" />
+    <file src="..\winguard-go\install.ps1" target="\" />
+    <file src="..\winguard-go\wininstall.bat" target="\" />
+    <file src="..\winguard-go\config\sample-config.yaml" target="config\" />
+  </files>
+</package>
